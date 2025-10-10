@@ -5,7 +5,7 @@ mobileConsole<sup>v2</sup> is a further refinement (complete rewrite) of a JavaS
 
 ## About
 
-mobileConsole reroutes the native <code>window.console</code> output and renders it to HTML. This means that you can include mobileConsole in any project, without having to rewrite any existing logging; mobileConsole 'hijacks' all console methods, such as console.log, console.warn, etc. It also outputs global window.onerror errors and sports a command line input. Oh, and it even has dark color scheme support!
+mobileConsole reroutes the native <code>window.console</code> output and renders it to HTML. This means that you can include mobileConsole in any project, without having to rewrite any existing logging; mobileConsole 'hijacks' all console methods, such as `console.log`, `console.warn`, etc. It also outputs global `window.onerror` errors and sports a command line input. Oh, and it even has dark color scheme support!
 
 See it in action at https://code.hnldesign.nl/demo/hnl.MobileConsole.v2.html. You can freely resize the console by (touchmove/click-)dragging the top bar, or tap/click it once to minimize/restore the console. Clear the console by using the recycle-bin icon.
 
@@ -13,12 +13,33 @@ See it in action at https://code.hnldesign.nl/demo/hnl.MobileConsole.v2.html. Yo
 
 Include the JavaScript file into the <code>&lt;head&gt;</code> section of your page, and make sure it's the **first** script loaded (or at least *before* other scripts of which you need to be able to see console logging). A separate CSS is required for proper styling/theming/positioning of the console. This file is loaded through JavaScript, so you only need to include the js file in your project. Just make sure the CSS file resides in the same path as the JavaScript file.
 
+You could also do something clever like this, to only target small screen devices:
+
+```javascript
+<script type="module">
+    if (window.matchMedia('(max-width: 768px)').matches) {
+        import('/your/path/to/hnl.mobileconsole.min.js');
+    }
+</script>
+```
+Though this only works in browsers supporting ES modules (which is fine for current-gen).
+
 ### Via CDN (jsDelivr)
 
 You can include https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/hnl.mobileconsole.min.js, which always gets you the latest version. The required CSS is loaded automatically (from the jsDelivr CDN) by the script.
 
 Example:
 `<script src="https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/hnl.mobileconsole.min.js"></script>`
+
+Or, similarly, like the previous media-matching module approach:
+
+```javascript
+<script type="module">
+    if (window.matchMedia('(max-width: 768px)').matches) {
+        import('https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/hnl.mobileconsole.min.js');
+    }
+</script>
+```
 
 ### Userscript (using Tampermonkey or Violentmonkey)
 Use the provided userscript [`mobileConsole.user.js`](https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/mobileConsole.user.js). 
