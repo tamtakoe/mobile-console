@@ -5,6 +5,8 @@
  * Licensed under the MIT license
  *
  * Changelog:
+ * 2.0.7
+ *  - Added detection for duplicate loading
  * 2.0.6
  *  - Bugfix
  * 2.0.5
@@ -43,6 +45,7 @@
  *  grouping repeated logs of same type
  *  toggling of logtypes
  *
+ * Roadmap: full ES6 rewrite to v3 - 2025/2026
  */
 
 /* stracktracejs:*/
@@ -57,7 +60,6 @@
 }(function () {
   'use strict';
   (function mobileConsole(console, StackTraceJs) {
-    window.originalConsole = {}; //keep the original, unmodified console for internal debugging
 
     const mc = {
       _build : '22.0408',
@@ -487,6 +489,17 @@
     }
 
     function _init() {
+      if (window.originalConsole) {
+        if (document.currentScript && document.currentScript.src.includes('hnl.mobileconsole.js')) {
+          console.warn(`[mobileConsole] already loaded - Remove duplicate import.`);
+        } else {
+          console.warn(`[mobileConsole] already loaded - Did you import it twice?`);
+        }
+        return;
+      } else {
+        window.originalConsole = {}; //keep the original, unmodified console for internal debugging
+      }
+
       //build console
       _constructConsole();
 
