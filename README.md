@@ -3,6 +3,14 @@
 # mobileConsole
 mobileConsole<sup>v2</sup> is a further refinement (complete rewrite) of a JavaScript console-emulator I wrote, which provides a way to view console output on devices that don't support this (visually) natively/easily (such as Safari on iOS). It extends JavaScript's native console to display a visual (HTML) console inside the webpage.
 
+## About the fork
+
+- Code optimizations (smaller/faster runtime, fewer DOM updates where possible)
+- Memory leak fixes (better cleanup of stored/buffered messages and internal state)
+- Added visibility API: `window.mobileConsoleShow()`, `window.mobileConsoleHide()`, `window.mobileConsoleToggle()`
+- Added limit API: `window.mobileConsoleSetMaxMessages(n)` to cap stored messages
+- Hidden by default
+
 ## About
 
 mobileConsole reroutes the native <code>window.console</code> output and renders it to HTML. This means that you can include mobileConsole in any project, without having to rewrite any existing logging; mobileConsole 'hijacks' all console methods, such as `console.log`, `console.warn`, etc. It also outputs global `window.onerror` errors and sports a command line input. Oh, and it even has dark color scheme support!

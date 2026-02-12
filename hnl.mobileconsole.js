@@ -1,51 +1,11 @@
 /*!
- * hnl.mobileConsole - javascript mobile console - v2.0.6 - build 22.0422 - 04/2022
- * Adds html console to webpage. Especially useful for debugging JS on mobile devices.
- * Supports 'log', 'trace', 'info', 'warn', 'error', 'group', 'groupEnd', 'table', 'assert', 'clear'
- * Licensed under the MIT license
+ * MobileConsole v2.1.0 https://github.com/tamtakoe/mobile-console
+ * Forked by https://github.com/c-kick/mobileConsole v2.0.7
  *
- * Changelog:
- * 2.0.7
- *  - Added detection for duplicate loading
- * 2.0.6
- *  - Bugfix
- * 2.0.5
- *  - Restructured & cleaned up code
- *  - Shortened CSS selectors
- *  - Factory-wrapped mobileConsole
- *  - Rewrote parts of, and restructured, HTML stringifier
- * 2.0.4
- *  - Fixed mobileConsole leaking into the window
- *  - Fixed a bug where everything other than objects didn't produce any output
- * 2.0.3
- *  - Rewrote large portions of the object parser to better match chrome devtools output + colors
- *  - Continued restructuring colors
- * 2.0.2
- *  - Restructured colors
- *  - Added stack traces to custom .error() log messages
- *  - Minor fixes
- * 2.0.1
- *  - Integrated stacktracejs instead of dynamic import
- *  - Added user-prefers dark-mode support
- *  - Added time() and timeEnd() support
- *  - Added option to minimize console, by tapping/clicking the top bar, which also acts as a resize-handle for the console
- * 2.0.0
- *  - Complete rewrite
- *
- * Original author: @hnldesign
- * Further changes, comments: @hnldesign
- * Copyright (c) 2014-2022 HN Leussink
- * Dual licensed under the MIT and GPL licenses.
- *
- * Info: http://www.hnldesign.nl/work/code/javascript-mobile-console/
- * Demo: http://code.hnldesign.nl/demo/hnl.MobileConsole.html
- *
- * todo:
- *  grouping
- *  grouping repeated logs of same type
- *  toggling of logtypes
- *
- * Roadmap: full ES6 rewrite to v3 - 2025/2026
+ *  - window.mobileConsoleShow()              - Shows console and replays buffered messages
+ *  - window.mobileConsoleHide()              - Hides console (buffers subsequent logs)
+ *  - window.mobileConsoleToggle()            - Toggles console visibility
+ *  - window.mobileConsoleSetMaxMessages(n)   - Sets max stored messages limit (default 1000)
  */
 
 /* stracktracejs:*/
@@ -60,12 +20,18 @@
 }(function () {
   'use strict';
   (function mobileConsole(console, StackTraceJs) {
+    // Compiled and minifyed from hnl.mobileconsole.scss
+    const MC_CSS = "div.mobile-console{--show-lines:8;--bg-color:#FFF;--text-color:#222;--handle-color:#DDD;--handle-color-active:#00afff;--border-color-row:#EEE;--border-selected:rgba(0,175,255,0.3);--bg-selected:rgba(144,191,213,0.2);--border-error:rgba(255,184,184,0.3);--text-error:#e00000;--bg-error:rgba(255,0,0,0.1);--border-warn:rgba(255,221,149,0.3);--icon-warn:#deb40c;--text-warn:#72635a;--bg-warn:rgba(255,226,113,0.2);--console-color-array-value:#00316b;--console-color-tagname:#831282;--console-color-string:#d90f00;--console-color-element-attr:#994500;--console-color-element-attr-val:#211dab;--console-color-obj-prop:#666;--console-color-obj-prop-expanded:#640064;--console-color-obj-length:#aa7aad;--console-color-boolean:#211dab;--console-color-function:#666;--console-color-function-expanded:#0050b2;--line-height:26px;--line-height-input:32px;--font-size:12px;--font-size-input:16px;--handle-height:16px;display:flex;flex-direction:column;overscroll-behavior-y:none;padding:0;margin:0;margin-top:var(--handle-height);box-sizing:content-box;position:fixed;bottom:0;right:0;width:100%;border:0 none;font-size:var(--font-size);line-height:var(--line-height);font-family:Consolas,monaco,monospace;z-index:999999;background-color:var(--bg-color);color:var(--text-color);height:calc(var(--line-height)*var(--show-lines) + var(--line-height-input));max-height:calc(100vh - var(--handle-height))}@media (prefers-color-scheme:dark){div.mobile-console{--bg-color:#222;--text-color:#EEE;--handle-color:#555;--border-color-row:#444;--border-selected:rgba(0,175,255,0.6);--bg-selected:rgba(50,75,140,0.2);--text-warn:#ff9800;--bg-warn:rgba(255,180,0,0.1);--icon-warn:#ffcc00;--text-error:#ff6767;--console-color-array-value:#9980ff;--console-color-hellip:#fff;--console-color-string:#35d4c7;--console-color-tagname:#5db0d7;--console-color-element-attr:#9bbbdc;--console-color-element-attr-val:#f29766;--console-color-obj-prop:#AAA;--console-color-obj-prop-expanded:#03bcf4;--console-color-obj-length:#178575;--console-color-boolean:#9980ff;--console-color-function:#AAA;--console-color-function-expanded:#ff9800}}div.mobile-console.minimized{height:calc(var(--line-height-input) + var(--line-height))!important}div.mobile-console div.mc-scroll-handle{touch-action:none;-webkit-user-select:none;-webkit-touch-callout:none;z-index:2;content:\"\";background-color:var(--handle-color);position:absolute;top:calc(0px - var(--handle-height));height:var(--handle-height);width:100%;cursor:ns-resize}div.mobile-console div.mc-scroll-handle::before{content:\"\";display:block;width:140px;height:30%;background-color:#AAA;position:relative;left:calc(50% - 70px);border-radius:3px;top:35%}div.mobile-console div.mc-scroll-handle.active{background-color:var(--handle-color-active)}div.mobile-console div.mc-scroll-handle.active::before{background-color:rgba(255,255,255,0.75)}div.mobile-console::before{content:\"\";flex:1 1 0}div.mobile-console div.mc-scroller-wrapper{-webkit-overflow-scrolling:touch;touch-action:pan-y;overflow:auto;display:flex;flex-direction:column-reverse;width:100%;height:auto}div.mobile-console div.mc-scroller-wrapper div.mc-scroller-content{justify-content:flex-start;place-content:flex-start;place-self:stretch;flex-basis:100%;height:-moz-fit-content;height:fit-content}div.mobile-console div.mc-scroller-wrapper span.mc-row{color:var(--text-color);padding:0 8px 0 0;display:flex;overflow:hidden;animation:fadein 100ms normal forwards linear;max-height:var(--line-height);max-width:100%;box-shadow:0 1px 0 0 inset var(--border-color-row)}div.mobile-console div.mc-scroller-wrapper span.mc-row:last-child{box-shadow:0 -1px 0 0 inset var(--border-color-row),0 1px 0 0 inset var(--border-color-row)}div.mobile-console div.mc-scroller-wrapper span.mc-row svg{vertical-align:middle}div.mobile-console div.mc-scroller-wrapper span.mc-row .visible-expanded{display:none}div.mobile-console div.mc-scroller-wrapper span.mc-row .hidden-expanded{display:inline-block}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-row-firstline{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90%;display:block}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded{max-height:-moz-fit-content;max-height:fit-content}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded span.expander>svg{transform:rotate(90deg)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .visible-expanded{display:inline-block}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .hidden-expanded{display:none}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-element-row,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-object-row{display:block}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-icon{width:var(--line-height);max-height:var(--line-height);text-align:center;flex-shrink:0}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-icon>svg{width:50%;align-self:center;vertical-align:center}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message span.inline-console-icon{max-height:var(--line-height);text-align:center}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message span.inline-console-icon>svg{width:calc(var(--font-size)*0.75);margin:0 2px 0 0;align-self:center;vertical-align:center}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message span.inline-console-icon.expander{color:#787878}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message pre{margin:0!important;padding:0!important;text-indent:1rem;font-size:inherit!important}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded>span.mc-message{max-height:-moz-fit-content;max-height:fit-content;overflow:visible;white-space:normal;overflow-wrap:anywhere}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-element-row,div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-object-row{line-height:calc(var(--line-height)*0.75)}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-referrer{align-self:flex-start;flex-shrink:1;word-break:keep-all;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;color:#888888;display:flex;justify-content:flex-end;max-width:calc((100% - var(--line-height))/2)}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-referrer>a{color:#888888}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-warn{background-color:var(--bg-warn);color:var(--text-warn);--border-color-row:var(--border-warn)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-warn>span.mc-icon{color:var(--icon-warn)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-error{background-color:var(--bg-error);color:var(--text-error);--border-color-row:var(--border-error)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-error>span.mc-icon{color:var(--text-error)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-log.mc-row-expanded,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-timeEnd.mc-row-expanded,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-info.mc-row-expanded{background-color:var(--bg-selected)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-log.mc-row-expanded+span.mc-row,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-info.mc-row-expanded+span.mc-row,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-log.mc-row-expanded,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-info.mc-row-expanded{--border-color-row:var(--border-selected)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-text{color:var(--text-color)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-grey{color:#888888}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-tag{color:var(--console-color-tagname)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-string{color:var(--console-color-string)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-hellip{color:var(--console-color-hellip)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-element-attr{color:var(--console-color-element-attr)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-element-attr-val{color:var(--console-color-element-attr-val)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-obj-prop,div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-obj-prop-unchanged{color:var(--console-color-obj-prop)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-obj-length{color:var(--console-color-obj-length)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-function{color:var(--console-color-function)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-boolean{color:var(--console-color-boolean)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-array-value{color:var(--console-color-array-value)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-object-row .mc-color-function{color:var(--console-color-function-expanded)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-object-row .mc-color-obj-prop{font-weight:bold;color:var(--console-color-obj-prop-expanded)}div.mobile-console div.mc-input{display:flex;height:var(--line-height-input);padding:0}div.mobile-console div.mc-input form.mc-input-form{flex:1}div.mobile-console div.mc-input input.mc-input-input{background-color:var(--bg-color);color:var(--text-color);font-size:var(--font-size-input);height:var(--line-height-input);line-height:var(--line-height-input);padding:0;border:0 none;width:100%}div.mobile-console div.mc-input input.mc-input-input:focus,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill:hover,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill:focus,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill:active{outline:0;background-color:var(--bg-color)!important;color:var(--text-color)!important;-webkit-box-shadow:0 0 0 var(--line-height) var(--bg-color) inset!important;-webkit-text-fill-color:var(--text-color)!important}div.mobile-console div.mc-input span.mc-icon{width:var(--line-height);max-height:var(--line-height-input);text-align:center;flex-shrink:0;color:var(--text-color)}div.mobile-console div.mc-input span.mc-icon>svg{width:50%;align-self:center;vertical-align:bottom}div.mobile-console div.mc-input span.mc-button{cursor:pointer;margin:2px}div.mobile-console div.mc-input span.mc-button>svg{vertical-align:middle}div.mobile-console div.mc-input span.mc-button:last-child{margin-right:4px}@keyframes fadein{from{opacity:0}to{opacity:1}}";
 
     const mc = {
-      _build : '22.0408',
+      _build : '2.1.0',
       _options : {
         stacktraces: true, //do you want stacktraces? Frees up some screenspace if disabled
+        maxMessages: 1000,  //max DOM rows kept in console
       },
+      _buffer: [],         //buffered messages when console is hidden
+      _visible: false,     //visibility flag, controlled via window API
+      _updatePending: false, //rAF debounce flag for _updateWrapper
       _icos : {
         caret:    '<path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>',
         chevron:  '<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>',
@@ -307,29 +273,36 @@
 
         if (mc._options.stacktraces) row.appendChild(ref);
 
-        //make row expandable by user click
-        row.addEventListener('click', function () {
-          this.classList.toggle('mc-row-expanded');
-          _updateWrapper();
-        });
-
         _updateWrapper();
-        //write row to console
+        //write row to console; trim old rows beyond limit
         mc._scroller.appendChild(row);
+        while (mc._scroller.children.length > mc._options.maxMessages) {
+          mc._scroller.removeChild(mc._scroller.firstChild);
+        }
       }
     }
 
     function _updateWrapper() {
-      if (mc._scrollWrapper.scrollTop >= 0) {
-        // Fixes a safari @ ios issue that requires the element to be redrawn when adding children,
-        // to maintain scrolled to bottom position
-        mc._scrollWrapper.style.display = 'block';
-        mc._scrollWrapper.offsetHeight;
-        mc._scrollWrapper.style.display = '';
+      // Debounce via rAF: batch multiple log calls into one reflow
+      if (!mc._updatePending) {
+        mc._updatePending = true;
+        requestAnimationFrame(function() {
+          // Fixes a safari @ ios issue that requires the element to be redrawn
+          mc._scrollWrapper.style.display = 'block';
+          mc._scrollWrapper.offsetHeight;
+          mc._scrollWrapper.style.display = '';
+          mc._updatePending = false;
+        });
       }
     }
 
     function _preLogger($log_level, $originalArgs, $stackTrace) {
+      // When hidden: buffer raw args (skip expensive stacktrace + DOM)
+      if (!mc._visible) {
+        mc._buffer.push({ level: $log_level, args: Array.prototype.slice.call($originalArgs) });
+        if (mc._buffer.length > mc._options.maxMessages) mc._buffer.shift();
+        return;
+      }
       return _logger({
         //'sender_frame' : __gCrWeb.message.getFrameId(),
         'log_level': $log_level,
@@ -345,21 +318,22 @@
     }
 
     function _writeCSS() {
-      let scriptPath = new Error().stack.match(mc._uriRegex)[0];
-      scriptPath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
-      let link = document.createElement('link');
-      link.type = 'text/css';
-      link.rel = 'stylesheet';
-      link.href = scriptPath + '/hnl.mobileconsole.css';
-      document.head.appendChild(link);
+      const style = document.createElement('style');
+      style.textContent = MC_CSS;
+      document.head.appendChild(style);
     }
 
     function _attachConsole() {
       function _attach() {
         document.body.appendChild(mc._element);
-        setTimeout(function () {
-          document.body.style.paddingBottom = mc._element.clientHeight + 12 + 'px';
-        }, 50);
+        // Start hidden; use window.mobileConsoleShow() to reveal
+        if (!mc._visible) {
+          mc._element.style.display = 'none';
+        } else {
+          setTimeout(function () {
+            document.body.style.paddingBottom = mc._element.clientHeight + 12 + 'px';
+          }, 50);
+        }
         _writeCSS();
       }
 
@@ -484,6 +458,15 @@
         console.clear();
       });
 
+      //delegated click handler for expanding rows (instead of per-row listeners)
+      mc._scroller.addEventListener('click', function(e) {
+        var row = e.target.closest('.mc-row');
+        if (row) {
+          row.classList.toggle('mc-row-expanded');
+          // Don't call _updateWrapper here - it causes unwanted scroll to bottom
+        }
+      });
+
       //make console resizable
       _makeResizable(mc._handle, mc._element);
     }
@@ -503,7 +486,7 @@
       //build console
       _constructConsole();
 
-      console.warn('[mobileConsole] now taking over browser console. Line-numbers will now be misreported in regular console.');
+      console.warn(`[mobileConsole] now taking over browser console. Line-numbers will now be misreported in regular console.`);
 
       //replace console
       for (let method in console) {
@@ -558,7 +541,33 @@
         setTimeout(_attachConsole.bind(mc), 10);
       }
 
-      console.info('[mobileConsole] v2 - build ' + mc._build + ' ready.');
+      // Public API for show/hide (sets _visible flag, no DOM reads needed)
+      window.mobileConsoleShow = function() {
+        mc._visible = true;
+        mc._element.style.display = '';
+        document.body.style.paddingBottom = mc._element.clientHeight + 12 + 'px';
+        // Replay buffered messages
+        var buf = mc._buffer;
+        mc._buffer = [];
+        buf.forEach(function(item) {
+          _preLogger(item.level, item.args);
+        });
+      };
+      window.mobileConsoleHide = function() {
+        mc._visible = false;
+        mc._element.style.display = 'none';
+        document.body.style.paddingBottom = '';
+      };
+      window.mobileConsoleToggle = function() {
+        mc._visible ? window.mobileConsoleHide() : window.mobileConsoleShow();
+      };
+      window.mobileConsoleSetMaxMessages = function(max) {
+        if (typeof max === 'number' && max > 0) {
+          mc._options.maxMessages = Math.floor(max);
+        }
+      };
+
+      console.info('[mobileConsole] v' + mc._build);
 
     }
 

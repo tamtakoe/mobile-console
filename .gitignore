@@ -1,3 +1,1 @@
-*.min.*
-*.map
-/.idea/
+/node_modules

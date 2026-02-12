@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Console Demo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 1rem; }
+    .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    button { padding: 0.5rem 1rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Mobile Console Demo</h1>
+  <div class="controls">
+    <button type="button" id="toggle">Show/Hide Mobile Console</button>
+    <button type="button" id="throw-error">Generate an Error</button>
+  </div>
+
+  <script src="hnl.mobileconsole.min.js"></script>
+  <script>
+    function generateLog() {
+      try { Upsss } catch (e) { console.error('Some error', e); }
+    }
+
+    console.log({ Some: ['Structure']})
+    console.log('Some log', { foo: 'bar'})
+    console.info('Some info')
+    console.warn('Some warn')
+    console.error('Some error')
+
+    document.getElementById('toggle').addEventListener('click', function () {
+      window.mobileConsoleToggle && window.mobileConsoleToggle();
+    });
+
+    document.getElementById('throw-error').addEventListener('click', generateLog);
+  </script>
+</body>
+</html>
