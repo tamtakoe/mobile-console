@@ -5,11 +5,12 @@ mobileConsole<sup>v2</sup> is a further refinement (complete rewrite) of a JavaS
 
 ## About the fork
 
-- Code optimizations (smaller/faster runtime, fewer DOM updates where possible)
+- Code optimizations (smaller/faster runtime, CSS included, fewer DOM updates where possible)
 - Memory leak fixes (better cleanup of stored/buffered messages and internal state)
 - Added visibility API: `window.mobileConsoleShow()`, `window.mobileConsoleHide()`, `window.mobileConsoleToggle()`
 - Added limit API: `window.mobileConsoleSetMaxMessages(n)` to cap stored messages
-- Hidden by default
+- ⚠️ Hidden by default
+- ⚠️ Not stored on CDN. Use hnl.mobileconsole.min.js (~55 KB) directly
 
 ## About
 

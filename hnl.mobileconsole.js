@@ -568,7 +568,6 @@
       };
 
       console.info('[mobileConsole] v' + mc._build);
-
     }
 
     _init();
