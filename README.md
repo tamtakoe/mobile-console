@@ -11,7 +11,7 @@ mobileConsole<sup>v2</sup> is a further refinement (complete rewrite) of a JavaS
 - Added limit API: `window.mobileConsoleSetMaxMessages(n)` to cap stored messages
 - Added coping message by long click (1s)
 - ⚠️ Hidden by default
-- ⚠️ Not stored on CDN. Use hnl.mobileconsole.min.js (~55 KB) directly
+- ⚠️ Not stored on CDN. Use hnl.mobileconsole.min.js (~59 KB) directly
 
 ## About
 
