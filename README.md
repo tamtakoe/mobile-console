@@ -9,7 +9,7 @@ mobileConsole<sup>v2</sup> is a further refinement (complete rewrite) of a JavaS
 - Memory leak fixes (better cleanup of stored/buffered messages and internal state)
 - Added visibility API: `window.mobileConsoleShow()`, `window.mobileConsoleHide()`, `window.mobileConsoleToggle()`
 - Added limit API: `window.mobileConsoleSetMaxMessages(n)` to cap stored messages
-- Added coping message by long click (1s). Doesn't always work in iframe
+- Copy message by long-press (1s); may not work in cross-origin iframes (browser restriction)
 - ⚠️ Hidden by default
 - ⚠️ Not stored on CDN. Use hnl.mobileconsole.min.js (~60 KB) directly
 
