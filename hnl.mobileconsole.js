@@ -438,25 +438,43 @@
 
     function _copyTextToClipboard(text) {
       if (!text) return Promise.resolve(false);
-      if (navigator.clipboard?.writeText && window.isSecureContext) {
-        return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
-      }
-      return new Promise(function (resolve) {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.setAttribute('readonly', '');
-        ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-          resolve(!!document.execCommand('copy'));
-        } catch (e) {
-          resolve(false);
-        } finally {
-          document.body.removeChild(ta);
+      // When console runs inside an iframe, clipboard is often restricted; use top document (same-origin) for copy
+      var win = window;
+      var doc = document;
+      try {
+        if (window !== window.top) {
+          win = window.top;
+          doc = win.document;
         }
-      });
+      } catch (e) {}
+
+      function execCommandCopy() {
+        return new Promise(function (resolve) {
+          var ta;
+          try {
+            win.focus();
+            ta = doc.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px';
+            doc.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            resolve(!!doc.execCommand('copy'));
+          } catch (e) {
+            resolve(false);
+          } finally {
+            try { if (ta?.parentNode) doc.body.removeChild(ta); } catch (err) {}
+          }
+        });
+      }
+
+      if (navigator.clipboard?.writeText && window.isSecureContext) {
+        return navigator.clipboard.writeText(text)
+          .then(function () { return true; })
+          .catch(function () { return execCommandCopy(); });
+      }
+      return execCommandCopy();
     }
 
     function _showToast(text) {
@@ -480,6 +498,7 @@
       mc._btnClear = _create('span', 'mc-icon console-button');
       mc._toast = _create('div', 'mc-toast');
       mc._toast.textContent = 'Copied';
+      mc._element.setAttribute('tabindex', '-1'); // focusable for clipboard in iframe
 
       //lego
       mc._scrollWrapper.appendChild(mc._scroller);
