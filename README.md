@@ -10,6 +10,7 @@ mobileConsole<sup>v2</sup> is a further refinement (complete rewrite) of a JavaS
 - Added visibility API: `window.mobileConsoleShow()`, `window.mobileConsoleHide()`, `window.mobileConsoleToggle()`
 - Added limit API: `window.mobileConsoleSetMaxMessages(n)` to cap stored messages
 - Copy message by long-press (1s); may not work in cross-origin iframes (browser restriction)
+- Source map support
 - ⚠️ Hidden by default
 - ⚠️ Not stored on CDN. Use hnl.mobileconsole.min.js (~60 KB) directly
 
@@ -33,6 +34,18 @@ You could also do something clever like this, to only target small screen device
 </script>
 ```
 Though this only works in browsers supporting ES modules (which is fine for current-gen).
+
+## Development
+Preview
+```sh
+python3 -m http.server 8080
+```
+Open test page on [localhost:8080](http://localhost:8080)
+
+Build
+```sh
+npm run build
+```
 
 ### Via CDN (jsDelivr)
 

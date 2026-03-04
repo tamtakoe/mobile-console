@@ -1,6 +1,6 @@
 {
   "name": "mobile-console",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Mobile console",
   "scripts": {
     "build": "terser hnl.mobileconsole.js -o hnl.mobileconsole.min.js -c -m"

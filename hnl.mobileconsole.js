@@ -1,5 +1,5 @@
 /*!
- * MobileConsole v2.1.0 https://github.com/tamtakoe/mobile-console
+ * MobileConsole v2.2.0 https://github.com/tamtakoe/mobile-console
  * Forked by https://github.com/c-kick/mobileConsole v2.0.7
  *
  *  - window.mobileConsoleShow()              - Shows console and replays buffered messages
@@ -24,7 +24,7 @@
     const MC_CSS = "div.mobile-console{--show-lines:8;--bg-color:#FFF;--text-color:#222;--handle-color:#DDD;--handle-color-active:#00afff;--border-color-row:#EEE;--border-selected:rgba(0,175,255,0.3);--bg-selected:rgba(144,191,213,0.2);--border-error:rgba(255,184,184,0.3);--text-error:#e00000;--bg-error:rgba(255,0,0,0.1);--border-warn:rgba(255,221,149,0.3);--icon-warn:#deb40c;--text-warn:#72635a;--bg-warn:rgba(255,226,113,0.2);--console-color-array-value:#00316b;--console-color-tagname:#831282;--console-color-string:#d90f00;--console-color-element-attr:#994500;--console-color-element-attr-val:#211dab;--console-color-obj-prop:#666;--console-color-obj-prop-expanded:#640064;--console-color-obj-length:#aa7aad;--console-color-boolean:#211dab;--console-color-function:#666;--console-color-function-expanded:#0050b2;--line-height:26px;--line-height-input:32px;--font-size:12px;--font-size-input:16px;--handle-height:16px;display:flex;flex-direction:column;overscroll-behavior-y:none;padding:0;margin:0;margin-top:var(--handle-height);box-sizing:content-box;position:fixed;bottom:0;right:0;width:100%;border:0 none;font-size:var(--font-size);line-height:var(--line-height);font-family:Consolas,monaco,monospace;z-index:999999;background-color:var(--bg-color);color:var(--text-color);height:calc(var(--line-height)*var(--show-lines) + var(--line-height-input));max-height:calc(100vh - var(--handle-height))}@media (prefers-color-scheme:dark){div.mobile-console{--bg-color:#222;--text-color:#EEE;--handle-color:#555;--border-color-row:#444;--border-selected:rgba(0,175,255,0.6);--bg-selected:rgba(50,75,140,0.2);--text-warn:#ff9800;--bg-warn:rgba(255,180,0,0.1);--icon-warn:#ffcc00;--text-error:#ff6767;--console-color-array-value:#9980ff;--console-color-hellip:#fff;--console-color-string:#35d4c7;--console-color-tagname:#5db0d7;--console-color-element-attr:#9bbbdc;--console-color-element-attr-val:#f29766;--console-color-obj-prop:#AAA;--console-color-obj-prop-expanded:#03bcf4;--console-color-obj-length:#178575;--console-color-boolean:#9980ff;--console-color-function:#AAA;--console-color-function-expanded:#ff9800}}div.mobile-console.minimized{height:calc(var(--line-height-input) + var(--line-height))!important}div.mobile-console div.mc-scroll-handle{touch-action:none;-webkit-user-select:none;-webkit-touch-callout:none;z-index:2;content:\"\";background-color:var(--handle-color);position:absolute;top:calc(0px - var(--handle-height));height:var(--handle-height);width:100%;cursor:ns-resize}div.mobile-console div.mc-scroll-handle::before{content:\"\";display:block;width:140px;height:30%;background-color:#AAA;position:relative;left:calc(50% - 70px);border-radius:3px;top:35%}div.mobile-console div.mc-scroll-handle.active{background-color:var(--handle-color-active)}div.mobile-console div.mc-scroll-handle.active::before{background-color:rgba(255,255,255,0.75)}div.mobile-console::before{content:\"\";flex:1 1 0}div.mobile-console div.mc-scroller-wrapper{-webkit-overflow-scrolling:touch;touch-action:pan-y;overflow:auto;display:flex;flex-direction:column-reverse;width:100%;height:auto}div.mobile-console div.mc-scroller-wrapper div.mc-scroller-content{justify-content:flex-start;place-content:flex-start;place-self:stretch;flex-basis:100%;height:-moz-fit-content;height:fit-content}div.mobile-console div.mc-scroller-wrapper span.mc-row{color:var(--text-color);padding:0 8px 0 0;display:flex;overflow:hidden;animation:fadein 100ms normal forwards linear;max-height:var(--line-height);max-width:100%;box-shadow:0 1px 0 0 inset var(--border-color-row)}div.mobile-console div.mc-scroller-wrapper span.mc-row:last-child{box-shadow:0 -1px 0 0 inset var(--border-color-row),0 1px 0 0 inset var(--border-color-row)}div.mobile-console div.mc-scroller-wrapper span.mc-row svg{vertical-align:middle}div.mobile-console div.mc-scroller-wrapper span.mc-row .visible-expanded{display:none}div.mobile-console div.mc-scroller-wrapper span.mc-row .hidden-expanded{display:inline-block}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-row-firstline{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90%;display:block}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded{max-height:-moz-fit-content;max-height:fit-content}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded span.expander>svg{transform:rotate(90deg)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .visible-expanded{display:inline-block}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .hidden-expanded{display:none}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-element-row,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-object-row{display:block}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-icon{width:var(--line-height);max-height:var(--line-height);text-align:center;flex-shrink:0}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-icon>svg{width:50%;align-self:center;vertical-align:center}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message span.inline-console-icon{max-height:var(--line-height);text-align:center}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message span.inline-console-icon>svg{width:calc(var(--font-size)*0.75);margin:0 2px 0 0;align-self:center;vertical-align:center}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message span.inline-console-icon.expander{color:#787878}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-message pre{margin:0!important;padding:0!important;text-indent:1rem;font-size:inherit!important}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded>span.mc-message{max-height:-moz-fit-content;max-height:fit-content;overflow:visible;white-space:normal;overflow-wrap:anywhere}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-element-row,div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-object-row{line-height:calc(var(--line-height)*0.75)}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-referrer{align-self:flex-start;flex-shrink:1;word-break:keep-all;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;color:#888888;display:flex;justify-content:flex-end;max-width:calc((100% - var(--line-height))/2)}div.mobile-console div.mc-scroller-wrapper span.mc-row>span.mc-referrer>a{color:#888888}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-warn{background-color:var(--bg-warn);color:var(--text-warn);--border-color-row:var(--border-warn)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-warn>span.mc-icon{color:var(--icon-warn)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-error{background-color:var(--bg-error);color:var(--text-error);--border-color-row:var(--border-error)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-error>span.mc-icon{color:var(--text-error)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-log.mc-row-expanded,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-timeEnd.mc-row-expanded,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-info.mc-row-expanded{background-color:var(--bg-selected)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-log.mc-row-expanded+span.mc-row,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-info.mc-row-expanded+span.mc-row,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-log.mc-row-expanded,div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-info.mc-row-expanded{--border-color-row:var(--border-selected)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-text{color:var(--text-color)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-grey{color:#888888}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-tag{color:var(--console-color-tagname)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-string{color:var(--console-color-string)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-hellip{color:var(--console-color-hellip)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-element-attr{color:var(--console-color-element-attr)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-element-attr-val{color:var(--console-color-element-attr-val)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-obj-prop,div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-obj-prop-unchanged{color:var(--console-color-obj-prop)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-obj-length{color:var(--console-color-obj-length)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-function{color:var(--console-color-function)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-boolean{color:var(--console-color-boolean)}div.mobile-console div.mc-scroller-wrapper span.mc-row .mc-color-array-value{color:var(--console-color-array-value)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-object-row .mc-color-function{color:var(--console-color-function-expanded)}div.mobile-console div.mc-scroller-wrapper span.mc-row.mc-row-expanded .mc-object-row .mc-color-obj-prop{font-weight:bold;color:var(--console-color-obj-prop-expanded)}div.mobile-console div.mc-input{display:flex;height:var(--line-height-input);padding:0}div.mobile-console div.mc-input form.mc-input-form{flex:1}div.mobile-console div.mc-input input.mc-input-input{background-color:var(--bg-color);color:var(--text-color);font-size:var(--font-size-input);height:var(--line-height-input);line-height:var(--line-height-input);padding:0;border:0 none;width:100%}div.mobile-console div.mc-input input.mc-input-input:focus,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill:hover,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill:focus,div.mobile-console div.mc-input input.mc-input-input:-webkit-autofill:active{outline:0;background-color:var(--bg-color)!important;color:var(--text-color)!important;-webkit-box-shadow:0 0 0 var(--line-height) var(--bg-color) inset!important;-webkit-text-fill-color:var(--text-color)!important}div.mobile-console div.mc-input span.mc-icon{width:var(--line-height);max-height:var(--line-height-input);text-align:center;flex-shrink:0;color:var(--text-color)}div.mobile-console div.mc-input span.mc-icon>svg{width:50%;align-self:center;vertical-align:bottom}div.mobile-console div.mc-input span.mc-button{cursor:pointer;margin:2px}div.mobile-console div.mc-input span.mc-button>svg{vertical-align:middle}div.mobile-console div.mc-input span.mc-button:last-child{margin-right:4px}@keyframes fadein{from{opacity:0}to{opacity:1}}div.mobile-console div.mc-toast{position:absolute;top:calc(0px - var(--handle-height) + 2px);left:50%;transform:translateX(-50%);padding:2px 10px;border-radius:999px;font-size:12px;line-height:1.4;background:rgba(0,0,0,.7);color:#fff;z-index:3;opacity:0;pointer-events:none;transition:opacity 120ms linear}div.mobile-console div.mc-toast.visible{opacity:1}";
 
     const mc = {
-      _build : '2.1.0',
+      _build : '2.2.0',
       _options : {
         stacktraces: true, //do you want stacktraces? Frees up some screenspace if disabled
         maxMessages: 1000,  //max DOM rows kept in console
@@ -164,7 +164,8 @@
     }
 
     function _getReferrerFilename($filePath) {
-      let fileName = ($filePath && $filePath.includes('/')) ? $filePath.split('\\').pop().split('/').pop() : 'anonymous';
+      if (!$filePath) return 'anonymous';
+      let fileName = $filePath.includes('/') ? $filePath.split('\\').pop().split('/').pop() : $filePath;
       fileName = fileName.trim() === '' ? '(index)' : fileName;
       fileName = (fileName.split('?').shift().trim() === '') ? fileName : fileName.split('?').shift().trim(); //remove querystring, but only if that doesn't clear the entire filename
       return fileName;
@@ -208,7 +209,7 @@
           if (typeof messagePart === 'string' && messagePart.includes('%c')) {
             parts.push(messagePart.split('%c').slice(1));
           } else {
-            parts.push(typeof messagePart !== 'string' ? _stringify.object(messagePart) : messagePart);
+            parts.push(typeof messagePart !== 'string' ? (messagePart instanceof Error ? messagePart.toString() : _stringify.object(messagePart)) : messagePart);
           }
         });
 
@@ -228,11 +229,12 @@
         let ref = _create('span', 'mc-referrer');
         ref.innerHTML = 'anonymous';
 
-        //get referrer (from trace)
+        //get referrer (from trace) — skip anonymous/native frames, use first frame with a real fileName
         if (typeof $contents.trace !== 'undefined' && $contents.trace.length > 0) {
-          let theTrace = $contents.trace[0];
-          let fileName = _getReferrerFilename(theTrace.fileName),
-            href = theTrace.fileName ? theTrace.fileName.match(mc._uriRegex)[0] : '',
+          let theTrace = $contents.trace.find(function(t) { return t.fileName; }) || $contents.trace[0];
+          let hrefMatch = theTrace.fileName ? theTrace.fileName.match(mc._uriRegex) : null,
+            fileName = _getReferrerFilename(theTrace.fileName),
+            href = hrefMatch ? hrefMatch[0] : (theTrace.fileName ? new URL(theTrace.fileName, document.baseURI).href : ''),
             lineCol = (theTrace.lineNumber) ? ":" + theTrace.lineNumber : '';
           ref.innerHTML = href ? '<a href="' + href + '" target="_blank">' + fileName + lineCol + '</a>' : fileName + lineCol;
           if (theTrace.details) {
@@ -258,7 +260,7 @@
             msg.innerHTML = (($contents.trace.length && mc._options.stacktraces) ? expander : '') + finalParts.join('') + '<br/>';
             if (mc._options.stacktraces) {
               $contents.trace.forEach(function (traceRow) {
-                msg.innerHTML += traceRow.source + '<br/>';
+                msg.innerHTML += (traceRow.source || '') + '<br/>';
               });
             }
           } else {
@@ -274,7 +276,6 @@
         if (mc._options.stacktraces) row.appendChild(ref);
 
         _updateWrapper();
-        //write row to console; trim old rows beyond limit
         mc._scroller.appendChild(row);
         while (mc._scroller.children.length > mc._options.maxMessages) {
           mc._scroller.removeChild(mc._scroller.firstChild);
@@ -287,13 +288,21 @@
       if (!mc._updatePending) {
         mc._updatePending = true;
         requestAnimationFrame(function() {
-          // Fixes a safari @ ios issue that requires the element to be redrawn
-          mc._scrollWrapper.style.display = 'block';
+          // Force reflow without toggling display (display toggle was resetting scrollTop)
           mc._scrollWrapper.offsetHeight;
-          mc._scrollWrapper.style.display = '';
           mc._updatePending = false;
         });
       }
+    }
+
+    function _stackFrameToTraceRow(frame) {
+      var fn = (typeof frame.getFileName === 'function' ? frame.getFileName() : null) || frame.fileName;
+      var ln = (typeof frame.getLineNumber === 'function' ? frame.getLineNumber() : null);
+      if (ln == null) ln = frame.lineNumber;
+      var col = (typeof frame.getColumnNumber === 'function' ? frame.getColumnNumber() : null);
+      if (col == null) col = frame.columnNumber;
+      var src = (typeof frame.toString === 'function' ? frame.toString() : null) || frame.source || (fn ? fn + ':' + ln + ':' + col : '');
+      return { fileName: fn, lineNumber: ln, columnNumber: col, source: src };
     }
 
     function _preLogger($log_level, $originalArgs, $stackTrace) {
@@ -303,17 +312,38 @@
         if (mc._buffer.length > mc._options.maxMessages) mc._buffer.shift();
         return;
       }
-      return _logger({
-        //'sender_frame' : __gCrWeb.message.getFrameId(),
-        'log_level': $log_level,
-        'message': Array.prototype.slice.call($originalArgs),
-        'url': document.location.href,
-        'trace': mc._options.stacktraces ? ($stackTrace ? $stackTrace : StackTraceJs.getSync({
-          filter: function (line) {
-            return line.fileName ? (!line.fileName.includes('mobileconsole') && !line.fileName.includes('stacktrace')) : true;
-          },
-          offline: true
-        })) : undefined
+      function doLog(trace) {
+        return _logger({
+          'log_level': $log_level,
+          'message': Array.prototype.slice.call($originalArgs),
+          'url': document.location.href,
+          'trace': mc._options.stacktraces ? (trace != null ? trace : StackTraceJs.getSync({
+            filter: function (line) {
+              return line.fileName ? (!line.fileName.includes('mobileconsole') && !line.fileName.includes('stacktrace')) : true;
+            },
+            offline: true
+          })) : undefined
+        });
+      }
+      var _smFilter = function (line) {
+        return line.fileName ? (!line.fileName.includes('mobileconsole') && !line.fileName.includes('stacktrace')) : true;
+      };
+      var _gpsOpts = { filter: _smFilter };
+      if ($stackTrace != null) return doLog($stackTrace);
+      if (!mc._options.stacktraces) return doLog(null);
+      if ($originalArgs.length > 0 && $originalArgs[0] instanceof Error && $originalArgs[0].stack) {
+        StackTraceJs.fromError($originalArgs[0], _gpsOpts).then(function (frames) {
+          doLog(frames.map(_stackFrameToTraceRow));
+        }).catch(function () {
+          doLog(null);
+        });
+        return;
+      }
+      // Resolve source maps for all log types (async, no XHR)
+      StackTraceJs.get(_gpsOpts).then(function (frames) {
+        doLog(frames.map(_stackFrameToTraceRow));
+      }).catch(function () {
+        doLog(null);
       });
     }
 
@@ -521,12 +551,6 @@
       mc._inputUser.setAttribute('autocorrect', 'off');
       mc._inputUser.setAttribute('spellcheck', 'false');
       mc._inputUser.setAttribute('autocomplete', 'on');
-      mc._scrollWrapper.addEventListener('scroll', function () {
-        //fix scroll sticking issue
-        if (this.scrollTop > 0) {
-          this.scrollTop = 0;
-        }
-      });
       mc._btnClear.addEventListener('click', function () {
         console.clear();
       });
@@ -638,12 +662,17 @@
       }
 
       //Bind to window.onerror
-      window.onerror = function () {
-        _preLogger.call(mc, 'error', arguments[0], [{
-          fileName: arguments[1],
-          lineNumber: arguments[2],
-          details: arguments[4].stack.replace('\n', '<br\>')
-        }]);
+      window.onerror = function (message, source, lineno, colno, error) {
+        if (error) {
+          // Pass the Error object so _preLogger uses fromError for source map resolution
+          _preLogger.call(mc, 'error', [error]);
+        } else {
+          _preLogger.call(mc, 'error', [message || 'Unknown error'], [{
+            fileName: source,
+            lineNumber: lineno,
+            source: (source ? source.split('/').pop() : 'anonymous') + ':' + lineno
+          }]);
+        }
         return false;
       };
 
@@ -669,7 +698,6 @@
           console.error(e.message);
         } finally {
           mc._inputUser.value = '';
-          mc._scrollWrapper.scrollTop = 0;
         }
       });
 
